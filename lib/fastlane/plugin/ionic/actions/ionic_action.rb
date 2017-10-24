@@ -101,7 +101,7 @@ module Fastlane
         end
 
         # TODO: extract params - only attach correct platform args
-        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" 
+        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}"
       end
 
       # export build paths (run #3)
@@ -116,8 +116,8 @@ module Fastlane
       end
 
       def self.upgrade_xcodeproj(platform)
-        # TODO platform = Actions.lane_context[Actions::SharedValues::PLATFORM_NAME]
-        
+        # TODO: platform = Actions.lane_context[Actions::SharedValues::PLATFORM_NAME]
+
         app_name = self.get_app_name
         team_id = CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
         xcodeprojpath = "platforms/ios/#{app_name}.xcodeproj"
