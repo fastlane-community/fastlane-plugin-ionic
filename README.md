@@ -27,9 +27,18 @@ ionic(
 ionic(
   platform: 'android', # Build your Android Ionic project
   release: false # Build a "Debug" app
-) 
+)
 ```
 
+### `upgrade_super_old_xcode`
+
+Upgrades super old Xcode projects to work with current tooling. (Used automatically by `ionic`.)
+
+```ruby
+upgrade_super_old_xcode
+```
+
+This action is based on [`fastlane-plugin-upgrade_super_old_xcode_project`](https://github.com/ionic-zone/fastlane-plugin-upgrade_super_old_xcode_project) which it unfortunately can not include automatically, so its code is copy/pasted into this plugin manually.
 
 ## Examples
 

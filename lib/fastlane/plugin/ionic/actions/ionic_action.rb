@@ -115,7 +115,24 @@ module Fastlane
         # TODO: https://github.com/bamlab/fastlane-plugin-cordova/issues/7
       end
 
+      def self.upgrade_xcodeproj(platform)
+        # TODO platform = Actions.lane_context[Actions::SharedValues::PLATFORM_NAME]
+        
+        app_name = self.get_app_name
+        team_id = CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
+        xcodeprojpath = "platforms/ios/#{app_name}.xcodeproj"
+
+        if platform == :ios
+          other_action.upgrade_super_old_xcode_project(
+            path: xcodeprojpath,
+            team_id: team_id
+            # stop_on_activated: true # TODO Not yet implemented
+          )
+        end
+      end
+
       def self.run(params)
+        self.upgrade_xcodeproj(params[:platform])
         self.check_and_add_platform(params[:platform])
         self.build(params)
         self.set_build_paths(params[:release])
