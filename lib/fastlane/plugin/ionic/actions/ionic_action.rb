@@ -120,14 +120,17 @@ module Fastlane
 
         app_name = self.get_app_name
         team_id = CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
-        xcodeprojpath = "platforms/ios/#{app_name}.xcodeproj"
+        xcodeprojpath = "../platforms/ios/#{app_name}.xcodeproj"
 
-        if platform == :ios
+        if platform == "ios"
           other_action.upgrade_super_old_xcode_project(
             path: xcodeprojpath,
-            team_id: team_id
+            team_id: team_id,
             # stop_on_activated: true # TODO Not yet implemented
+            use_automatic_signing: true
           )
+        else 
+          puts "not ios"
         end
       end
 
