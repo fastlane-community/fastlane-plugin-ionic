@@ -67,7 +67,7 @@ module Fastlane
       # add cordova platform if missing (run #1)
       def self.check_and_add_platform(platform)
         if platform && !File.directory?("./platforms/#{platform}")
-          sh "ionic cordova platform add #{platform}"
+          sh "ionic cordova platform add --no-interactive #{platform}"
         end
       end
 
@@ -104,9 +104,9 @@ module Fastlane
         end
 
         if params[:platform].to_s == 'ios'
-          sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args}" 
+          sh "ionic cordova compile --no-interactive #{params[:platform]} #{args.join(' ')} -- #{ios_args}" 
         elsif params[:platform].to_s == 'android'
-          sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- -- #{android_args}" 
+          sh "ionic cordova compile --no-interactive #{params[:platform]} #{args.join(' ')} -- -- #{android_args}" 
         end
       end
 
