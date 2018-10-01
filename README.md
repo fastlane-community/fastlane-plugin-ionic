@@ -108,6 +108,8 @@ Which will produce:
 | **build_number**         | Build Number for iOS and Android                        | CORDOVA_BUILD_NUMBER              |           |
 | **browserify**           | Specifies whether to browserify build or not            | CORDOVA_BROWSERIFY                |  *false*  |
 | **cordova_prepare**      | Specifies whether to run `ionic cordova prepare` before building  | CORDOVA_PREPARE               |  *true*   |
+| **cordova_no_fetch**      | Specifies whether to run `cordova platform add` with `--nofetch` parameter  | CORDOVA_NO_FETCH               |  *false*   |
+| **cordova_build_config**      | Specifies whether to run `cordova compile` with `--buildConfig=<ConfigFile` parameter  | CORDOVA_BUILD_CONFIG               |     |
 
 ## Run tests for this plugin
 
