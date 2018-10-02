@@ -19,7 +19,6 @@ module Fastlane
       IOS_ARGS_MAP = {
         type: 'packageType',
         team_id: 'developmentTeam',
-        provisioning_profile: 'provisioningProfile'
         provisioning_profile: 'provisioningProfile',
         build_flag: 'buildFlag'
       }
