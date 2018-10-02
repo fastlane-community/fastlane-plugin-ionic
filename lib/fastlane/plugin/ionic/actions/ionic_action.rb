@@ -40,7 +40,7 @@ module Fastlane
             unless param_value.to_s.empty?
               platform_args << "--#{cli_param}=#{Shellwords.escape(param_value)}"
             end
-          end          
+          end
         end
 
         return platform_args.join(' ')
