@@ -30,12 +30,8 @@ module Fastlane
         args_map.each do |action_key, cli_param|
           param_value = params[action_key]
 
-          puts cli_param
-          puts param_value
-          puts action_key
-          puts param_value.kind_of?(Array)
-
           if action_key == 'build_flag' && param_value.kind_of?(Array)
+            print "Build flag is an array!"
             unless param_value.empty?
               param_value.each do |flag|
                 platform_args << "--#{cli_param}=#{Shellwords.escape(flag)}"
