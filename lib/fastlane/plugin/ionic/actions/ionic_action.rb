@@ -34,6 +34,7 @@ module Fastlane
           puts param_value
           puts action_key
           puts param_value.kind_of?(Array)
+          puts action_key == 'build_flag'
 
           if action_key == 'build_flag' && param_value.kind_of?(Array)
             puts "Build flag is an array!"
