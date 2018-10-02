@@ -287,7 +287,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :build_flag,
             env_name: "CORDOVA_IOS_BUILD_FLAG",
-            description: "An array of Xcode buildFlag. Will be appended on compile command.",
+            description: "An array of Xcode buildFlag. Will be appended on compile command",
             type: Array,
             optional: true,
             default_value: []
