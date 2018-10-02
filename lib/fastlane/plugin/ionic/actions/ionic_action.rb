@@ -290,7 +290,7 @@ module Fastlane
             description: "An array of Xcode buildFlag. Will be appended on compile command.",
             type: Array,
             optional: true,
-            defaultValue: []
+            default_value: []
           )
           FastlaneCore::ConfigItem.new(
             key: :cordova_build_config,
