@@ -33,7 +33,7 @@ module Fastlane
           if action_key.to_s == 'build_flag' && param_value.kind_of?(Array)
             unless param_value.empty?
               param_value.each do |flag|
-                platform_args << "--#{cli_param}=#{flag}"
+                platform_args << "--#{cli_param}=\"#{flag}\""
               end
             end
           else
