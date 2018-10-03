@@ -297,7 +297,7 @@ module Fastlane
             description: "Call `cordova compile` with `--buildConfig<ConfigFile>` parameter. Param: ConfigFile: String",
             type: String,
             optional: true,
-            defaultValue: ''
+            default_value: ''
           )
         ]
       end
