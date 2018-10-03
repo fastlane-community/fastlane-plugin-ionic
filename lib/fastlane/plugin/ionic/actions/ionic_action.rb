@@ -290,7 +290,7 @@ module Fastlane
             is_string: false,
             optional: true,
             default_value: []
-          )
+          ),
           FastlaneCore::ConfigItem.new(
             key: :cordova_build_config,
             env_name: "CORDOVA_BUILD_CONFIG",
