@@ -3,7 +3,10 @@ platform :ios do
 
   lane :deploy do
     match(type: "appstore")
-    ionic(platform: 'ios')
+    ionic(
+      platform: 'ios'
+      build_flag: ['-UseModernBuildSystem=0']
+    )
     deliver(ipa: ENV('CORDOVA_IOS_RELEASE_BUILD_PATH'))
   end
 end

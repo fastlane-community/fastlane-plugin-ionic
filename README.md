@@ -68,6 +68,7 @@ with an `Appfile` such as
 app_identifier "com.awesome.app"
 apple_id "apple@id.com"
 team_id "28323HT"
+| **build_flag**           | An array of Xcode buildFlag. Will be appended on compile command.  | CORDOVA_IOS_BUILD_FLAG               | [] |
 ```
 
 If you're using **Crosswalk**, replace `supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])` (and equivalents) by:
