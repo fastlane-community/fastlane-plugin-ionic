@@ -1,4 +1,3 @@
-require 'xcodeproj'
 module Fastlane
   module Actions
     module SharedValues
@@ -105,43 +104,10 @@ module Fastlane
 
         # code sign identity needs to be changed?
         if params[:platform].to_s == 'ios' && !params[:code_sign_identity].to_s.empty?
-          path = "./platforms/ios/#{self.get_app_name}.xcodeproj"
-          path = File.join(File.expand_path(path), "project.pbxproj")
-          
-          project = Xcodeproj::Project.open(params[:path])
-          UI.user_error!("Could not find path to project config '#{path}'. Pass the path to your project (not workspace)!") unless File.exist?(path)
-          UI.message("Updating the Automatic Codesigning flag to #{params[:use_automatic_signing] ? 'enabled' : 'disabled'} for the given project '#{path}'")
-
-          unless project.root_object.attributes["TargetAttributes"]
-            UI.user_error!("Seems to be a very old project file format - please open your project file in a more recent version of Xcode")
-            return false
-          end
-
-          target_dictionary = project.targets.map { |f| { name: f.name, uuid: f.uuid, build_configuration_list: f.build_configuration_list } }
-          changed_targets = []
-          project.root_object.attributes["TargetAttributes"].each do |target, sett|
-            found_target = target_dictionary.detect { |h| h[:uuid] == target }
-            if params[:targets]
-              # get target name
-              unless params[:targets].include?(found_target[:name])
-                UI.important("Skipping #{found_target[:name]} not selected (#{params[:targets].join(',')})")
-                next
-              end
-            end
-
-            build_configuration_list.set_setting("CODE_SIGN_IDENTITY", params[:code_sign_identity])
-
-            # We also need to update the value if it was overriden for a specific SDK
-            build_configuration_list.build_configurations.each do |build_configuration|
-              codesign_build_settings_keys = build_configuration.build_settings.keys.select { |key| key.to_s.match(/CODE_SIGN_IDENTITY.*/) }
-              codesign_build_settings_keys.each do |setting|
-                build_configuration_list.set_setting(setting, params[:code_sign_identity])
-              end
-            end
-            UI.important("Set Code Sign identity to: #{params[:code_sign_identity]} for target: #{found_target[:name]}")
-          end
-
-          project.save
+          Actions::AutomaticCodeSigningAction.run(
+            path: "./platforms/ios/#{self.get_app_name}.xcodeproj",
+            code_sign_identity: params[:code_sign_identity]
+          )
         end
 
         # special handling for `build_number` param
