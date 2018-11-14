@@ -104,8 +104,18 @@ module Fastlane
 
         # code sign identity needs to be changed?
         if params[:platform].to_s == 'ios' && !params[:code_sign_identity].to_s.empty?
+          # upgrade project first
+          team_id = CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
+          xcodeprojpath = "./platforms/ios/#{self.get_app_name}.xcodeproj"
+          
+          Actions::UpgradeSuperOldXcodeProjectAction.run(
+            path: xcodeprojpath,
+            team_id: team_id
+          )
+
+          # change code sign identity
           Actions::AutomaticCodeSigningAction.run(
-            path: "./platforms/ios/#{self.get_app_name}.xcodeproj",
+            path: xcodeprojpath,
             code_sign_identity: params[:code_sign_identity]
           )
         end
