@@ -108,6 +108,7 @@ module Fastlane
           team_id = CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
           xcodeprojpath = "./platforms/ios/#{self.get_app_name}.xcodeproj"
           
+          FastlaneRequire.install_gem_if_needed(gem_name: 'fastlane-plugin-upgrade_super_old_xcode_project', require_gem: true)
           Actions::UpgradeSuperOldXcodeProjectAction.run(
             path: xcodeprojpath,
             team_id: team_id
