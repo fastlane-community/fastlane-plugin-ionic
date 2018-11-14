@@ -20,7 +20,8 @@ module Fastlane
         type: 'packageType',
         team_id: 'developmentTeam',
         provisioning_profile: 'provisioningProfile',
-        build_flag: 'buildFlag'
+        build_flag: 'buildFlag',
+        code_sign_identity: 'codeSignIdentity'
       }
 
       # do rewriting and copying of action params
@@ -99,6 +100,14 @@ module Fastlane
         if params[:cordova_prepare]
           # TODO: Remove params not allowed/used for `prepare`
           sh "ionic cordova prepare #{params[:platform]} #{args.join(' ')}"
+        end
+
+        # code sign identity changing
+        if params[:platform].to_s == 'ios' && !params[:code_sign_identity].to_s.empty?
+          automatic_code_signing(
+            path: "./platforms/ios/#{self.get_app_name}.xcodeproj",
+            code_sign_identity: params[:code_sign_identity]
+          )
         end
 
         # special handling for `build_number` param
@@ -285,6 +294,13 @@ module Fastlane
             is_string: false,
             optional: true,
             default_value: []
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :code_sign_identity,
+            env_name: "CODE_SIGN_IDENTITY",
+            description: "Code signing identity type (iPhone Developer, iPhone Distribution)",
+            is_string: true,
+            optional: true
           )
         ]
       end
