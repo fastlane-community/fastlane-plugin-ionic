@@ -13,7 +13,8 @@ module Fastlane
         keystore_password: 'storePassword',
         key_password: 'password',
         keystore_alias: 'alias',
-        build_number: 'versionCode'
+        build_number: 'versionCode',
+        version_name: 'versionName'
       }
 
       IOS_ARGS_MAP = {
@@ -21,7 +22,8 @@ module Fastlane
         team_id: 'developmentTeam',
         provisioning_profile: 'provisioningProfile',
         build_flag: 'buildFlag',
-        code_sign_identity: 'codeSignIdentity'
+        code_sign_identity: 'codeSignIdentity',
+        version_name: 'versionName'
       }
 
       # do rewriting and copying of action params
@@ -129,6 +131,18 @@ module Fastlane
             plist_path: "#{self.get_app_name}/#{self.get_app_name}-Info.plist",
             block: lambda { |plist|
               plist['CFBundleVersion'] = cf_bundle_version
+            }
+          )
+        end
+
+        # special handling for `version_name` param
+        if params[:platform].to_s == 'ios' && !params[:version_name].to_s.empty?
+          cf_bundle_short_version = params[:build_number].to_s
+          Actions::UpdateInfoPlistAction.run(
+            xcodeproj: "./platforms/ios/#{self.get_app_name}.xcodeproj",
+            plist_path: "#{self.get_app_name}/#{self.get_app_name}-Info.plist",
+            block: lambda { |plist|
+              plist['CFBundleShortVersionString'] = cf_bundle_short_version
             }
           )
         end
@@ -310,6 +324,13 @@ module Fastlane
             key: :code_sign_identity,
             env_name: "CODE_SIGN_IDENTITY",
             description: "Code signing identity type (iPhone Developer, iPhone Distribution)",
+            is_string: true,
+            optional: true
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :version_name,
+            env_name: "VERSION_NAME",
+            description: "Version name for android and ios (ie. 1.0.0)",
             is_string: true,
             optional: true
           )
