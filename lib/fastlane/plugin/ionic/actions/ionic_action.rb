@@ -137,7 +137,7 @@ module Fastlane
 
         # special handling for `version_name` param
         if params[:platform].to_s == 'ios' && !params[:version_name].to_s.empty?
-          cf_bundle_short_version = params[:build_number].to_s
+          cf_bundle_short_version = params[:version_name].to_s
           Actions::UpdateInfoPlistAction.run(
             xcodeproj: "./platforms/ios/#{self.get_app_name}.xcodeproj",
             plist_path: "#{self.get_app_name}/#{self.get_app_name}-Info.plist",
