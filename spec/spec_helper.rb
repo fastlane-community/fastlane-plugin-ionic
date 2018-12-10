@@ -3,8 +3,10 @@ SimpleCov.start do
     add_filter 'spec/'
 end
 
-require 'codecov'
-SimpleCov.formatter = SimpleCov::Formatter::Codecov
+if(ENV['CI'])
+    require 'codecov'
+    SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
