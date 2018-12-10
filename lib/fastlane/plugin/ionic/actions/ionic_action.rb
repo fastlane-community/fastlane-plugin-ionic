@@ -13,13 +13,16 @@ module Fastlane
         keystore_password: 'storePassword',
         key_password: 'password',
         keystore_alias: 'alias',
-        build_number: 'versionCode'
+        build_number: 'versionCode',
+        min_sdk_version: 'gradleArg=-PcdvMinSdkVersion',
+        cordova_no_fetch: 'cordovaNoFetch'
       }
 
       IOS_ARGS_MAP = {
         type: 'packageType',
         team_id: 'developmentTeam',
-        provisioning_profile: 'provisioningProfile'
+        provisioning_profile: 'provisioningProfile',
+        build_flag: 'buildFlag'
       }
 
       # do rewriting and copying of action params
@@ -27,8 +30,17 @@ module Fastlane
         platform_args = []
         args_map.each do |action_key, cli_param|
           param_value = params[action_key]
-          unless param_value.to_s.empty?
-            platform_args << "--#{cli_param}=#{Shellwords.escape(param_value)}"
+
+          if action_key.to_s == 'build_flag' && param_value.kind_of?(Array)
+            unless param_value.empty?
+              param_value.each do |flag|
+                platform_args << "--#{cli_param}=#{flag.shellescape}"
+              end
+            end
+          else
+            unless param_value.to_s.empty?
+              platform_args << "--#{cli_param}=#{Shellwords.escape(param_value)}"
+            end
           end
         end
 
@@ -64,10 +76,14 @@ module Fastlane
         return self.get_platform_args(params, IOS_ARGS_MAP)
       end
 
-      # add cordova platform if missing (run #1)
-      def self.check_and_add_platform(platform)
+      def self.check_platform(params)
+        platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
-          sh "ionic cordova platform add #{platform}"
+          if params[:cordova_no_fetch]
+            sh "ionic cordova platform add #{platform} --nofetch"
+          else
+            sh "ionic cordova platform add #{platform}"
+          end
         end
       end
 
@@ -83,6 +99,11 @@ module Fastlane
         args << '--device' if params[:device]
         args << '--prod' if params[:prod]
         args << '--browserify' if params[:browserify]
+
+        if !params[:cordova_build_config_file].to_s.empty?
+          args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
+        end
+
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
@@ -122,7 +143,7 @@ module Fastlane
       end
 
       def self.run(params)
-        self.check_and_add_platform(params[:platform])
+        self.check_platform(params)
         self.build(params)
         self.set_build_paths(params[:release])
       end
@@ -236,7 +257,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :build_number,
             env_name: "CORDOVA_BUILD_NUMBER",
-            description: "Build Number for iOS",
+            description: "Sets the build number for iOS and version code for Android",
             optional: true,
             is_string: false
           ),
@@ -253,6 +274,36 @@ module Fastlane
             description: "Specifies whether to run `ionic cordova prepare` before building",
             default_value: true,
             is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :min_sdk_version,
+            env_name: "CORDOVA_ANDROID_MIN_SDK_VERSION",
+            description: "Overrides the value of minSdkVersion set in AndroidManifest.xml",
+            default_value: '',
+            is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_no_fetch,
+            env_name: "CORDOVA_NO_FETCH",
+            description: "Call `cordova platform add` with `--nofetch` parameter",
+            default_value: false,
+            is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :build_flag,
+            env_name: "CORDOVA_IOS_BUILD_FLAG",
+            description: "An array of Xcode buildFlag. Will be appended on compile command",
+            is_string: false,
+            optional: true,
+            default_value: []
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_build_config_file,
+            env_name: "CORDOVA_BUILD_CONFIG_FILE",
+            description: "Call `ionic cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path",
+            is_string: true,
+            optional: true,
+            default_value: ''
           )
         ]
       end
