@@ -1,5 +1,7 @@
 describe Fastlane::Actions::IonicAction do
   describe '#run' do
+  end
+
   describe '#check_platform' do
     before do
       allow(File).to receive(:directory?).and_return(false)
