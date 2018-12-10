@@ -42,7 +42,7 @@ module Fastlane
           # handle all other cases
           else
             unless param_value.to_s.empty?
-              platform_args << "--#{cli_param}=#{Shellwords.escape(param_value)}"
+              platform_args << "--#{cli_param}=#{param_value.shellescape}"
             end
           end
         end
