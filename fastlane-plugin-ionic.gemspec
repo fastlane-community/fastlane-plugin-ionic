@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'fastlane', '>= 1.111.0'
   spec.add_development_dependency 'simplecov'
+  spec.add_development_dependency 'codecov'
 end
