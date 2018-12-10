@@ -36,13 +36,13 @@ module Fastlane
           if action_key.to_s == 'build_flag' && param_value.kind_of?(Array)
             unless param_value.empty?
               param_value.each do |flag|
-                platform_args << "--#{cli_param}=#{flag.shellescape}"
+                platform_args << "--#{cli_param}=#{flag.to_s.shellescape}"
               end
             end
           # handle all other cases
           else
             unless param_value.to_s.empty?
-              platform_args << "--#{cli_param}=#{param_value.shellescape}"
+              platform_args << "--#{cli_param}=#{param_value.to_s.shellescape}"
             end
           end
         end
@@ -102,7 +102,7 @@ module Fastlane
         args << '--browserify' if params[:browserify]
 
         if !params[:cordova_build_config_file].to_s.empty?
-          args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
+          args << "--buildConfig=#{params[:cordova_build_config_file].shellescape}"
         end
 
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
@@ -140,6 +140,7 @@ module Fastlane
         ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/app/build/outputs/apk/#{build_type}/app-#{build_type}.apk"
         ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'] = "./platforms/ios/build/device/#{app_name}.ipa"
 
+        return true
         # TODO: https://github.com/bamlab/fastlane-plugin-cordova/issues/7
         # TODO: Set env vars that gym and Co automatically use
       end
