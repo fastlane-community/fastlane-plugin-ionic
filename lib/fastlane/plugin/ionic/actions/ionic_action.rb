@@ -9,34 +9,37 @@ module Fastlane
       # valid action params
 
       ANDROID_ARGS_MAP = {
-        keystore_path: 'keystore',
-        keystore_password: 'storePassword',
-        key_password: 'password',
-        keystore_alias: 'alias',
-        build_number: 'versionCode',
-        min_sdk_version: 'gradleArg=-PcdvMinSdkVersion',
-        cordova_no_fetch: 'cordovaNoFetch'
+        keystore_path:        'keystore',
+        keystore_password:    'storePassword',
+        key_password:         'password',
+        keystore_alias:       'alias',
+        build_number:         'versionCode',
+        min_sdk_version:      'gradleArg=-PcdvMinSdkVersion',
+        cordova_no_fetch:     'cordovaNoFetch'
       }
 
       IOS_ARGS_MAP = {
-        type: 'packageType',
-        team_id: 'developmentTeam',
+        type:                 'packageType',
+        team_id:              'developmentTeam',
         provisioning_profile: 'provisioningProfile',
-        build_flag: 'buildFlag'
+        build_flag:           'buildFlag'
       }
 
-      # do rewriting and copying of action params
-      def self.get_platform_args(params, args_map)
+      # extract arguments only valid for the platform from all arguments
+      # + map action params to the cli param they will be used for
+      def self.get_platform_args(params, platform_args_map)
         platform_args = []
-        args_map.each do |action_key, cli_param|
+        platform_args_map.each do |action_key, cli_param|
           param_value = params[action_key]
 
+          # handle `build_flag` being an Array
           if action_key.to_s == 'build_flag' && param_value.kind_of?(Array)
             unless param_value.empty?
               param_value.each do |flag|
                 platform_args << "--#{cli_param}=#{flag.shellescape}"
               end
             end
+          # handle all other cases
           else
             unless param_value.to_s.empty?
               platform_args << "--#{cli_param}=#{Shellwords.escape(param_value)}"
@@ -47,10 +50,7 @@ module Fastlane
         return platform_args.join(' ')
       end
 
-      # map action params to the cli param they will be used for
-
       def self.get_android_args(params)
-        # TODO document magic in README
         if params[:key_password].empty?
           params[:key_password] = params[:keystore_password]
         end
@@ -76,6 +76,7 @@ module Fastlane
         return self.get_platform_args(params, IOS_ARGS_MAP)
       end
 
+      # add platform if missing (run step #1)
       def self.check_platform(params)
         platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
@@ -93,7 +94,7 @@ module Fastlane
         return config.elements['widget'].elements['name'].first.value # TODO: Simplify!? (Check logic in cordova)
       end
 
-      # actual building! (run #2)
+      # actual building! (run step #2)
       def self.build(params)
         args = [params[:release] ? '--release' : '--debug']
         args << '--device' if params[:device]
@@ -131,7 +132,7 @@ module Fastlane
         end
       end
 
-      # export build paths (run #3)
+      # export build paths (run step #3)
       def self.set_build_paths(is_release)
         app_name = self.get_app_name
         build_type = is_release ? 'release' : 'debug'
@@ -140,6 +141,7 @@ module Fastlane
         ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'] = "./platforms/ios/build/device/#{app_name}.ipa"
 
         # TODO: https://github.com/bamlab/fastlane-plugin-cordova/issues/7
+        # TODO: Set env vars that gym and Co automatically use
       end
 
       def self.run(params)
