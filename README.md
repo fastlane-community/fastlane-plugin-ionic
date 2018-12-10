@@ -1,7 +1,11 @@
 # _fastlane_ Plugin for Ionic CLI
 
-[![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-ionic) [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/ionic-zone/fastlane-plugin-ionic/blob/master/LICENSE)
+[![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-ionic) 
+[![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/ionic-zone/fastlane-plugin-ionic/blob/master/LICENSE)
 [![Gem](https://img.shields.io/gem/v/fastlane-plugin-ionic.svg?style=flat)](http://rubygems.org/gems/fastlane-plugin-ionic)
+[![Build Status](https://travis-ci.org/ionic-zone/fastlane-plugin-ionic.svg?branch=master)](https://travis-ci.org/ionic-zone/fastlane-plugin-ionic)
+[![codecov](https://codecov.io/gh/ionic-zone/fastlane-plugin-ionic/branch/master/graph/badge.svg)](https://codecov.io/gh/ionic-zone/fastlane-plugin-ionic)
+
 
 This _fastlane_ plugin helps you build your **Ionic Cordova** project via the [`ionic` CLI](https://ionicframework.com/docs/cli/).
 
