@@ -36,18 +36,18 @@ module Fastlane
           if action_key.to_s == 'build_flag' && param_value.kind_of?(Array)
             unless param_value.empty?
               param_value.each do |flag|
-                platform_args << "--#{cli_param}=#{flag.shellescape}"
+                platform_args << "--#{cli_param}=#{flag.to_s.shellescape}"
               end
             end
           # handle all other cases
           else
             unless param_value.to_s.empty?
-              platform_args << "--#{cli_param}=#{param_value.shellescape}"
+              platform_args << "--#{cli_param}=#{param_value.to_s.shellescape}"
             end
           end
         end
 
-        return platform_args.join(' ')
+        return platform_args
       end
 
       def self.get_android_args(params)
@@ -94,25 +94,27 @@ module Fastlane
         return config.elements['widget'].elements['name'].first.value # TODO: Simplify!? (Check logic in cordova)
       end
 
-      # actual building! (run step #2)
-      def self.build(params)
+      def self.get_args(params)
         args = [params[:release] ? '--release' : '--debug']
         args << '--device' if params[:device]
         args << '--prod' if params[:prod]
         args << '--browserify' if params[:browserify]
 
         if !params[:cordova_build_config_file].to_s.empty?
-          args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
+          args << "--buildConfig=#{params[:cordova_build_config_file].shellescape}"
         end
 
-        android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
-        ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
+        return args
+      end
 
+      def self.prepare(params, args)
         if params[:cordova_prepare]
           # TODO: Remove params not allowed/used for `prepare`
           sh "ionic cordova prepare #{params[:platform]} --no-interactive #{args.join(' ')}"
         end
+      end
 
+      def self.update_build_number(params)
         # special handling for `build_number` param
         if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
           cf_bundle_version = params[:build_number].to_s
@@ -124,12 +126,24 @@ module Fastlane
             }
           )
         end
+      end
 
+      def self.compile(params, args)
         if params[:platform].to_s == 'ios'
-          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- #{ios_args}" 
+          android_args = self.get_android_args(params)
+          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- #{ios_args.join(' ')}" 
         elsif params[:platform].to_s == 'android'
-          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- -- #{android_args}" 
+          ios_args = self.get_ios_args(params)
+          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- -- #{android_args.join(' ')}" 
         end
+      end
+
+      # actual building! (run step #2)
+      def self.build(params)
+        args = self.get_args(params)
+        self.prepare(params, args)
+        self.update_build_number(params)
+        self.compile(params, args)
       end
 
       # export build paths (run step #3)
@@ -140,6 +154,7 @@ module Fastlane
         ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/app/build/outputs/apk/#{build_type}/app-#{build_type}.apk"
         ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'] = "./platforms/ios/build/device/#{app_name}.ipa"
 
+        return true
         # TODO: https://github.com/bamlab/fastlane-plugin-cordova/issues/7
         # TODO: Set env vars that gym and Co automatically use
       end
