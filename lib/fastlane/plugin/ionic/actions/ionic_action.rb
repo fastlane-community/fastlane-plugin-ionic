@@ -105,6 +105,14 @@ module Fastlane
           args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
         end
 
+        if !params[:project].to_s.empty?
+          args << "--project=#{params[:project]}"
+        end
+
+        if !params[:configuration].to_s.empty?
+          args << "--configuration=#{params[:configuration]}"
+        end
+
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
@@ -269,6 +277,20 @@ module Fastlane
             description: "Specifies whether to browserify build or not",
             default_value: false,
             is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+              key: :project,
+              env_name: "CORDOVA_PROJECT",
+              description: "Specifies project in multi-projects monorepo, the project is looked up by key in the projects object",
+              default_value: false,
+              is_string: true
+          ),
+          FastlaneCore::ConfigItem.new(
+              key: :configuration,
+              env_name: "CORDOVA_CONFIGURATION",
+              description: "Specifies the configuration to use (for instance to manage environment in angular)",
+              default_value: false,
+              is_string: true
           ),
           FastlaneCore::ConfigItem.new(
             key: :cordova_prepare,
