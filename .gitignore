@@ -8,3 +8,12 @@ Gemfile.lock
 /rdoc/
 fastlane/README.md
 fastlane/report.xml
+
+## Exclude bundle ruby
+.bundle/
+vendor/
+
+## Exclude intellij config
+.idea/
+
+
