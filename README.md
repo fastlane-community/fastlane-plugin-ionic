@@ -114,7 +114,7 @@ Which will produce:
 | **min_sdk_version**      | Overrides the value of minSdkVersion set in `AndroidManifest.xml` | CORDOVA_ANDROID_MIN_SDK_VERSION   | ''       |
 | **cordova_no_fetch**     | Specifies whether to run `ionic cordova platform add` with `--nofetch` parameter  | CORDOVA_NO_FETCH               |  *false*   |
 | **build_flag**           | An array of Xcode buildFlag. Will be appended on compile command.  | CORDOVA_IOS_BUILD_FLAG               | [] |
-| **project**              | Call `ionic cordova compile` with `--project=<Project>` to specify project in multi-projects monorepo, the project is looked up by key in the projects object  | CORDOVA_PROJECT               |     |
+| **project**              | Call `ionic cordova compile` with `--project=<Project>` to specify project in multi-projects monorepo, the project is looked up by key in the projects object *(Since Ionic CLI 4.3.0+)*  | CORDOVA_PROJECT               |     |
 | **configuration**        | Call `ionic cordova compile` with `--configuration=<Configuration>` to specify the configuration to use (for instance to manage environment in angular)  | CORDOVA_CONFIGURATION               |     |
 | **cordova_build_config_file**      | Call `ionic cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path  | CORDOVA_BUILD_CONFIG_FILE               |     |
 
