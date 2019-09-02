@@ -115,6 +115,7 @@ Which will produce:
 | **cordova_no_fetch**      | Specifies whether to run `ionic cordova platform add` with `--nofetch` parameter  | CORDOVA_NO_FETCH               |  *false*   |
 | **build_flag**           | An array of Xcode buildFlag. Will be appended on compile command.  | CORDOVA_IOS_BUILD_FLAG               | [] |
 | **cordova_build_config_file**      | Call `ionic cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path  | CORDOVA_BUILD_CONFIG_FILE               |     |
+| **use_local_ionic**      | Use locally installed Ionic instead of globally installed one. Useful for shared CI environments. | USE_LOCAL_IONIC                   | *false*    |
 
 
 ## Run tests for this plugin

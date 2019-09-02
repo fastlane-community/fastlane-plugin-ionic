@@ -80,10 +80,11 @@ module Fastlane
       def self.check_platform(params)
         platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
+          ionic_path = params[:use_local_ionic] ? "node_modules/.bin/" : ""
           if params[:cordova_no_fetch]
-            sh "ionic cordova platform add #{platform} --no-interactive --nofetch"
+            sh "#{ionic_path}ionic cordova platform add #{platform} --no-interactive --nofetch"
           else
-            sh "ionic cordova platform add #{platform} --no-interactive"
+            sh "#{ionic_path}ionic cordova platform add #{platform} --no-interactive"
           end
         end
       end
@@ -101,6 +102,8 @@ module Fastlane
         args << '--prod' if params[:prod]
         args << '--browserify' if params[:browserify]
 
+        ionic_path = params[:use_local_ionic] ? "node_modules/.bin/" : ""
+
         if !params[:cordova_build_config_file].to_s.empty?
           args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
         end
@@ -110,7 +113,7 @@ module Fastlane
 
         if params[:cordova_prepare]
           # TODO: Remove params not allowed/used for `prepare`
-          sh "ionic cordova prepare #{params[:platform]} --no-interactive #{args.join(' ')}"
+          sh "#{ionic_path}ionic cordova prepare #{params[:platform]} --no-interactive #{args.join(' ')}"
         end
 
         # special handling for `build_number` param
@@ -126,9 +129,9 @@ module Fastlane
         end
 
         if params[:platform].to_s == 'ios'
-          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- #{ios_args}" 
+          sh "#{ionic_path}ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- #{ios_args}" 
         elsif params[:platform].to_s == 'android'
-          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- -- #{android_args}" 
+          sh "#{ionic_path}ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- -- #{android_args}" 
         end
       end
 
@@ -306,7 +309,17 @@ module Fastlane
             is_string: true,
             optional: true,
             default_value: ''
-          )
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :use_local_ionic,
+            env_name: "USE_LOCAL_IONIC",
+            description: "Use locally installed Ionic instead of globally installed one. Useful for shared CI environments.",
+            is_string: false,
+            default_value: false,
+            verify_block: proc do |value|
+              UI.user_error!("Local Ionic should be boolean") unless [false, true].include? value
+            end
+          ),
         ]
       end
 
