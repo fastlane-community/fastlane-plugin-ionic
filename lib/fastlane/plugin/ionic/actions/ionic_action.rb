@@ -76,15 +76,18 @@ module Fastlane
         return self.get_platform_args(params, IOS_ARGS_MAP)
       end
 
+      def self.get_ionic_path(params)
+        return params[:use_local_ionic] ? "node_modules/.bin/" : ""
+      end
+
       # add platform if missing (run step #1)
       def self.check_platform(params)
         platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
-          ionic_path = params[:use_local_ionic] ? "node_modules/.bin/" : ""
           if params[:cordova_no_fetch]
-            sh "#{ionic_path}ionic cordova platform add #{platform} --no-interactive --nofetch"
+            sh "#{self.get_ionic_path(params)}ionic cordova platform add #{platform} --no-interactive --nofetch"
           else
-            sh "#{ionic_path}ionic cordova platform add #{platform} --no-interactive"
+            sh "#{self.get_ionic_path(params)}ionic cordova platform add #{platform} --no-interactive"
           end
         end
       end
@@ -102,8 +105,6 @@ module Fastlane
         args << '--prod' if params[:prod]
         args << '--browserify' if params[:browserify]
 
-        ionic_path = params[:use_local_ionic] ? "node_modules/.bin/" : ""
-
         if !params[:cordova_build_config_file].to_s.empty?
           args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
         end
@@ -113,7 +114,7 @@ module Fastlane
 
         if params[:cordova_prepare]
           # TODO: Remove params not allowed/used for `prepare`
-          sh "#{ionic_path}ionic cordova prepare #{params[:platform]} --no-interactive #{args.join(' ')}"
+          sh "#{self.get_ionic_path(params)}ionic cordova prepare #{params[:platform]} --no-interactive #{args.join(' ')}"
         end
 
         # special handling for `build_number` param
