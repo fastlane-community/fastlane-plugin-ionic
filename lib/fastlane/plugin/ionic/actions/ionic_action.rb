@@ -77,7 +77,7 @@ module Fastlane
       end
 
       def self.get_ionic_path(params)
-        return params[:use_local_ionic] ? "node_modules/.bin/" : ""
+        return params[:use_local_ionic] ? File.join("node_modules", ".bin", "") : ""
       end
 
       # add platform if missing (run step #1)
