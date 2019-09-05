@@ -76,14 +76,18 @@ module Fastlane
         return self.get_platform_args(params, IOS_ARGS_MAP)
       end
 
+      def self.get_ionic_path(params)
+        return params[:use_local_ionic] ? File.join("node_modules", ".bin", "") : ""
+      end
+
       # add platform if missing (run step #1)
       def self.check_platform(params)
         platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
           if params[:cordova_no_fetch]
-            sh "ionic cordova platform add #{platform} --no-interactive --nofetch"
+            sh "#{self.get_ionic_path(params)}ionic cordova platform add #{platform} --no-interactive --nofetch"
           else
-            sh "ionic cordova platform add #{platform} --no-interactive"
+            sh "#{self.get_ionic_path(params)}ionic cordova platform add #{platform} --no-interactive"
           end
         end
       end
@@ -110,7 +114,7 @@ module Fastlane
 
         if params[:cordova_prepare]
           # TODO: Remove params not allowed/used for `prepare`
-          sh "ionic cordova prepare #{params[:platform]} --no-interactive #{args.join(' ')}"
+          sh "#{self.get_ionic_path(params)}ionic cordova prepare #{params[:platform]} --no-interactive #{args.join(' ')}"
         end
 
         # special handling for `build_number` param
@@ -126,9 +130,9 @@ module Fastlane
         end
 
         if params[:platform].to_s == 'ios'
-          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- #{ios_args}" 
+          sh "#{ionic_path}ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- #{ios_args}" 
         elsif params[:platform].to_s == 'android'
-          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- -- #{android_args}" 
+          sh "#{ionic_path}ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- -- #{android_args}" 
         end
       end
 
@@ -306,7 +310,17 @@ module Fastlane
             is_string: true,
             optional: true,
             default_value: ''
-          )
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :use_local_ionic,
+            env_name: "USE_LOCAL_IONIC",
+            description: "Use locally installed Ionic instead of globally installed one. Useful for shared CI environments.",
+            is_string: false,
+            default_value: false,
+            verify_block: proc do |value|
+              UI.user_error!("Local Ionic should be boolean") unless [false, true].include? value
+            end
+          ),
         ]
       end
 
