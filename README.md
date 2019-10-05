@@ -113,6 +113,7 @@ Which will produce:
 | **cordova_prepare**      | Specifies whether to run `ionic cordova prepare` before building  | CORDOVA_PREPARE               |  *true*   |
 | **min_sdk_version**      | Overrides the value of minSdkVersion set in `AndroidManifest.xml` | CORDOVA_ANDROID_MIN_SDK_VERSION   | ''       |
 | **cordova_no_fetch**      | Specifies whether to run `ionic cordova platform add` with `--nofetch` parameter  | CORDOVA_NO_FETCH               |  *false*   |
+| **cordova_no_resources** | Specifies whether to run `ionic cordova platform add` with `--no-resources` parameter  | CORDOVA_NO_RESOURCES               |  *false*   |
 | **build_flag**           | An array of Xcode buildFlag. Will be appended on compile command.  | CORDOVA_IOS_BUILD_FLAG               | [] |
 | **cordova_build_config_file**      | Call `ionic cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path  | CORDOVA_BUILD_CONFIG_FILE               |     |
 
