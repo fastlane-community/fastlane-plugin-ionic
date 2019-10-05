@@ -79,12 +79,11 @@ module Fastlane
       # add platform if missing (run step #1)
       def self.check_platform(params)
         platform = params[:platform]
+        args = []
+        args << '--nofetch' if params[:cordova_no_fetch]
+        args << '--no-resources' if params[:cordova_no_resources]
         if platform && !File.directory?("./platforms/#{platform}")
-          if params[:cordova_no_fetch]
-            sh "ionic cordova platform add #{platform} --no-interactive --nofetch"
-          else
-            sh "ionic cordova platform add #{platform} --no-interactive"
-          end
+          sh "ionic cordova platform add #{platform} --no-interactive #{args.join(' ')}"
         end
       end
 
@@ -288,6 +287,13 @@ module Fastlane
             key: :cordova_no_fetch,
             env_name: "CORDOVA_NO_FETCH",
             description: "Call `cordova platform add` with `--nofetch` parameter",
+            default_value: false,
+            is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_no_resources,
+            env_name: "CORDOVA_NO_RESOURCES",
+            description: "Call `cordova platform add` with `--no-resources` parameter",
             default_value: false,
             is_string: false
           ),
