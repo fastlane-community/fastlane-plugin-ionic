@@ -99,6 +99,7 @@ module Fastlane
         args << '--device' if params[:device]
         args << '--prod' if params[:prod]
         args << '--browserify' if params[:browserify]
+        args << '--verbose' if params[:verbose]
 
         if !params[:cordova_build_config_file].to_s.empty?
           args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
@@ -211,6 +212,16 @@ module Fastlane
             default_value: 'appstore',
             verify_block: proc do |value|
               UI.user_error!("Valid options are development, enterprise, adhoc, and appstore.") unless ['development', 'enterprise', 'adhoc', 'appstore', 'ad-hoc', 'app-store'].include? value
+            end
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :verbose,
+            env_name: "CORDOVA_VERBOSE",
+            description: "Pipe out more verbose output to the shell",
+            default_value: false,
+            is_string: false,
+            verify_block: proc do |value|
+              UI.user_error!("Verbose should be boolean") unless [false, true].include? value
             end
           ),
           FastlaneCore::ConfigItem.new(
