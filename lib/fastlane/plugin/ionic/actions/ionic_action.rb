@@ -13,6 +13,7 @@ module Fastlane
         keystore_password:    'storePassword',
         key_password:         'password',
         keystore_alias:       'alias',
+        bundle:               'bundle',
         build_number:         'versionCode',
         min_sdk_version:      'gradleArg=-PcdvMinSdkVersion',
         cordova_no_fetch:     'cordovaNoFetch'
@@ -98,6 +99,7 @@ module Fastlane
         args = [params[:release] ? '--release' : '--debug']
         args << '--device' if params[:device]
         args << '--prod' if params[:prod]
+        args << '--bundle' if params[:bundle]
         args << '--browserify' if params[:browserify]
         args << '--verbose' if params[:verbose]
 
@@ -126,9 +128,9 @@ module Fastlane
         end
 
         if params[:platform].to_s == 'ios'
-          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- #{ios_args}" 
+          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- #{ios_args}"
         elsif params[:platform].to_s == 'android'
-          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- -- #{android_args}" 
+          sh "ionic cordova compile #{params[:platform]} --no-interactive #{args.join(' ')} -- -- #{android_args}"
         end
       end
 
@@ -237,6 +239,13 @@ module Fastlane
             description: "GUID of the provisioning profile to be used for signing",
             is_string: true,
             default_value: ''
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :bundle,
+            env_name: "BUNDLE",
+            description: "Use bundle for android",
+            is_string: false,
+            default_value: 'true'
           ),
           FastlaneCore::ConfigItem.new(
             key: :keystore_path,
