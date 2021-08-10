@@ -105,6 +105,7 @@ Which will produce:
 | **verbose**              | Pipe out more verbose output to the shell | CORDOVA_VERBOSE    | false |
 | **team_id**              | The development team (Team ID) to use for code signing  | CORDOVA_IOS_TEAM_ID               | *28323HT* |
 | **provisioning_profile** | GUID of the provisioning profile to be used for signing | CORDOVA_IOS_PROVISIONING_PROFILE  |           |
+| **package_type**         | This will determine what type of Android build is generated. <br>Valid options are apk and bundle | CORDOVA_ANDROID_PACKAGE_TYPE    | apk |
 | **keystore_path**        | Path to the Keystore for Android                        | CORDOVA_ANDROID_KEYSTORE_PATH     |           |
 | **keystore_password**    | Android Keystore password                               | CORDOVA_ANDROID_KEYSTORE_PASSWORD |           |
 | **key_password**         | Android Key password (default is keystore password)     | CORDOVA_ANDROID_KEY_PASSWORD      |           |
