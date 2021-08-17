@@ -140,7 +140,7 @@ module Fastlane
 
         # Update the build path accordingly if Android is being
         # built as an Android Application Bundle.
-        android_package_type = params[:android_package_type || 'apk'
+        android_package_type = params[:android_package_type] || 'apk'
         android_package_extension = android_package_type == 'bundle' ? '.aab' : '.apk'
 
         ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/app/build/outputs/#{android_package_type}/#{build_type}/app-#{build_type}#{android_package_extension}"
