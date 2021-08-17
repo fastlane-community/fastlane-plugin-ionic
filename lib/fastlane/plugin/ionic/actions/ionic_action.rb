@@ -16,7 +16,7 @@ module Fastlane
         build_number:         'versionCode',
         min_sdk_version:      'gradleArg=-PcdvMinSdkVersion',
         cordova_no_fetch:     'cordovaNoFetch',
-        package_type:         'packageType'
+        android_package_type: 'packageType'
       }
 
       IOS_ARGS_MAP = {
@@ -140,7 +140,7 @@ module Fastlane
 
         # Update the build path accordingly if Android is being
         # built as an Android Application Bundle.
-        android_package_type = params[:package_type] || 'apk'
+        android_package_type = params[:android_package_type || 'apk'
         android_package_extension = android_package_type == 'bundle' ? '.aab' : '.apk'
 
         ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/app/build/outputs/#{android_package_type}/#{build_type}/app-#{build_type}#{android_package_extension}"
@@ -245,10 +245,9 @@ module Fastlane
             default_value: ''
           ),
           FastlaneCore::ConfigItem.new(
-            key: :package_type,
+            key: :android_package_type,
             env_name: "CORDOVA_ANDROID_PACKAGE_TYPE",
             description: "This will determine what type of Android build is generated. Valid options are apk or bundle",
-            is_string: true,
             default_value: 'apk',
             verify_block: proc do |value|
               UI.user_error!("Valid options are apk or bundle.") unless ['apk', 'bundle'].include? value
