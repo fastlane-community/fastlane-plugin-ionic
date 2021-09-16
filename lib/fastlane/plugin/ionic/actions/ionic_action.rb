@@ -43,7 +43,7 @@ module Fastlane
           # handle all other cases
           else
             unless param_value.to_s.empty?
-              platform_args << "--#{cli_param}=#{param_value.shellescape}"
+              platform_args << "--#{cli_param}=#{Shellwords.escape(param_value)}"
             end
           end
         end
@@ -134,9 +134,9 @@ module Fastlane
       end
 
       # export build paths (run step #3)
-      def self.set_build_paths(is_release)
+      def self.set_build_paths(params)
         app_name = self.get_app_name
-        build_type = is_release ? 'release' : 'debug'
+        build_type = params[:release] ? 'release' : 'debug'
 
         # Update the build path accordingly if Android is being
         # built as an Android Application Bundle.
@@ -153,7 +153,7 @@ module Fastlane
       def self.run(params)
         self.check_platform(params)
         self.build(params)
-        self.set_build_paths(params[:release])
+        self.set_build_paths(params)
       end
 
       #####################################################
