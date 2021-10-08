@@ -101,6 +101,7 @@ module Fastlane
         args << '--prod' if params[:prod]
         args << '--browserify' if params[:browserify]
         args << '--verbose' if params[:verbose]
+         args << '--quiet' if params[:quiet]
 
         if !params[:cordova_build_config_file].to_s.empty?
           args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
@@ -228,6 +229,16 @@ module Fastlane
             is_string: false,
             verify_block: proc do |value|
               UI.user_error!("Verbose should be boolean") unless [false, true].include? value
+            end
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :quiet,
+            env_name: "CORDOVA_QUIET",
+            description: "Pipe out more quiet output to the shell",
+            default_value: false,
+            is_string: false,
+            verify_block: proc do |value|
+              UI.user_error!("Quiet should be boolean") unless [false, true].include? value
             end
           ),
           FastlaneCore::ConfigItem.new(
