@@ -16,14 +16,16 @@ module Fastlane
         build_number:         'versionCode',
         min_sdk_version:      'gradleArg=-PcdvMinSdkVersion',
         cordova_no_fetch:     'cordovaNoFetch',
-        android_package_type: 'packageType'
+        android_package_type: 'packageType',
+        cordova_angular_config: 'configuration'
       }
 
       IOS_ARGS_MAP = {
         type:                 'packageType',
         team_id:              'developmentTeam',
         provisioning_profile: 'provisioningProfile',
-        build_flag:           'buildFlag'
+        build_flag:           'buildFlag',
+        cordova_angular_config: 'configuration'
       }
 
       # extract arguments only valid for the platform from all arguments
@@ -42,7 +44,7 @@ module Fastlane
             end
           # handle all other cases
           else
-            unless param_value.to_s.empty?
+            unless param_value.to_s.empty? || (param_value == false)
               platform_args << "--#{cli_param}=#{param_value.shellescape}"
             end
           end
@@ -102,12 +104,17 @@ module Fastlane
         args << '--browserify' if params[:browserify]
         args << '--verbose' if params[:verbose]
 
+        if !params[:cordova_angular_config].to_s.empty?
+          args << "-c #{Shellwords.escape(params[:cordova_angular_config])}"
+        end
+
         if !params[:cordova_build_config_file].to_s.empty?
           args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
         end
 
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
+        puts args
 
         if params[:cordova_prepare]
           # TODO: Remove params not allowed/used for `prepare`
@@ -335,6 +342,14 @@ module Fastlane
             key: :cordova_build_config_file,
             env_name: "CORDOVA_BUILD_CONFIG_FILE",
             description: "Call `ionic cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path",
+            is_string: true,
+            optional: true,
+            default_value: ''
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_angular_config,
+            env_name: "CORDOVA_ANGULAR_CONFIG",
+            description: "Call `ionic cordova build [ios|android] -c [This Value]`",
             is_string: true,
             optional: true,
             default_value: ''
